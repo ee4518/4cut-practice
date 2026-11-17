@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고척초등학교 기버데이 인생네컷</title>
+  
+  <style>
+    /* 코트라 희망체 웹폰트 */
+    @font-face {
+      font-family: 'KotraHope';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2110@1.0/KOTRAHOPE.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      margin: 0;
+      padding: 10px 0;
+      background-color: #1a1a24;
+      color: #ffffff;
+      font-family: 'KotraHope', sans-serif !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: #ffde59;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.6);
+      font-family: 'KotraHope', sans-serif !important;
+      letter-spacing: 0.5px;
+    }
+
+    .top-panel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+      background: #282838;
+      padding: 8px 24px;
+      border-radius: 40px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .option-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+    }
+
+    button, .chip-btn, .btn-main, .btn-sub, .btn-modal {
+      font-family: 'KotraHope', sans-serif !important;
+    }
+
+    .chip-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chip-btn {
+      border: 2px solid transparent;
+      padding: 6px 15px;
+      border-radius: 20px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: bold;
+    }
+
+    .chip-btn.active {
+      border-color: #ffde59;
+      transform: scale(1.06);
+      box-shadow: 0 0 10px rgba(255, 222, 89, 0.7);
+    }
+
+    .theme-ribbon   { background: #e3f2fd; color: #1971c2; }
+    .theme-festival { background: #fff3bf; color: #e67700; }
+    .theme-heart    { background: #ffe3ec; color: #d6336c; }
+    .theme-animals  { background: #f1f3f5; color: #212529; }
+
+    input[type=range] {
+      width: 100px;
+      accent-color: #ffde59;
+      cursor: pointer;
+    }
+
+    .booth-container {
+      position: relative;
+      width: 440px;
+      height: 600px;
+      background: #000;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.8);
+      border: 5px solid #3c3c52;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      transition: filter 0.1s;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .cut-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #38d9a9;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 20px;
+      display: none;
+    }
+
+    .countdown-text {
+      font-size: 150px;
+      color: #ff2a5f;
+      text-shadow: 0 0 30px rgba(0,0,0,0.9);
+      opacity: 0;
+      transform: scale(0.3);
+      transition: all 0.25s ease-out;
+    }
+
+    .countdown-text.show {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+
+    .flash-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      border: none;
+      padding: 13px 45px;
+      font-size: 22px;
+      border-radius: 40px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(3, 105, 161, 0.5);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-main:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(2, 132, 199, 0.7);
+    }
+
+    .btn-main:disabled {
+      background: #555;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-sub {
+      background: #475569;
+      color: white;
+      border: none;
+      padding: 13px 22px;
+      font-size: 17px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-sub:hover { background: #64748b; }
+
+    /* 결과 & 배경 선택 모달 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.92);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: #252533;
+      padding: 18px 24px;
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    }
+
+    #previewCanvas {
+      width: 320px;
+      height: 480px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-modal {
+      border: none;
+      padding: 10px 22px;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .btn-print { background: #0284c7; }
+    .btn-print:hover { background: #0369a1; }
+    .btn-download { background: #475569; }
+    .btn-download:hover { background: #334155; }
+    .btn-close { background: #e11d48; }
+    .btn-close:hover { background: #be123c; }
+
+    /* 드래그 앤 드롭 안내 오버레이 */
+    .drop-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(2, 132, 199, 0.85);
+      color: white;
+      font-size: 32px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 300;
+      pointer-events: none;
+    }
+
+    /* 인쇄 대기 팝업 */
+    .loading-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.94);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      flex-direction: column;
+    }
+
+    .loading-card {
+      background: white;
+      color: #111;
+      padding: 40px 50px;
+      border-radius: 28px;
+      text-align: center;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.7);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .loading-card h2 {
+      font-size: 34px;
+      margin: 0 0 14px 0;
+      color: #0284c7;
+      font-family: 'KotraHope', sans-serif !important;
+    }
+
+    .loading-card p {
+      font-size: 22px;
+      color: #475569;
+      margin: 6px 0;
+      font-family: 'KotraHope', sans-serif !important;
+    }
+
+    .spinner {
+      margin: 24px auto 14px;
+      width: 60px;
+      height: 60px;
+      border: 6px solid #f1f5f9;
+      border-top: 6px solid #0284c7;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    @page { size: 4in 6in; margin: 0; }
+    @media print {
+      body * { visibility: hidden; }
+      .print-image, .print-image * { visibility: visible; }
+      .print-image {
+        position: absolute; left: 0; top: 0;
+        width: 100vw; height: 100vh; display: block !important;
+      }
+    }
+    .print-image { display: none; width: 100%; height: 100%; object-fit: fill; }
+  </style>
+</head>
+<body>
+
+  <header>★ 고척초등학교 기버데이 포토부스 ★</header>
+
+  <div class="top-panel">
+    <div class="option-group">
+      <span>☀️ 밝기:</span>
+      <input type="range" id="brightnessRange" min="100" max="150" value="118">
+      <span id="brightnessVal">118%</span>
+    </div>
+  </div>
+
+  <div class="booth-container">
+    <video id="webcam" autoplay playsinline></video>
+    <div class="overlay">
+      <div id="cutBadge" class="cut-badge">CUT 1 / 4</div>
+      <div id="countdown" class="countdown-text">5</div>
+    </div>
+    <div id="flash" class="flash-screen"></div>
+  </div>
+
+  <div class="controls">
+    <button id="btnStart" class="btn-main">📸 촬영 시작 (Space)</button>
+    <button id="btnPreview" class="btn-sub">🔍 배경 미리보기</button>
+  </div>
+
+  <!-- 결과 & 배경 선택 모달 -->
+  <div id="resultModal" class="modal">
+    <div class="modal-content">
+      <div class="option-group" style="margin-bottom: 2px;">
+        <span style="font-size: 16px;">🎨 배경 선택:</span>
+        <div class="chip-group" id="modalThemeChips">
+          <button class="chip-btn theme-ribbon active" data-theme="ribbon">🎀 하늘리본</button>
+          <button class="chip-btn theme-festival" data-theme="festival">🎉 손그림 축제</button>
+          <button class="chip-btn theme-heart" data-theme="heart">💖 몽글 하트</button>
+          <button class="chip-btn theme-animals" data-theme="animals">🐾 고양이 친구</button>
+        </div>
+      </div>
+
+      <canvas id="previewCanvas" width="1200" height="1800"></canvas>
+
+      <div class="modal-buttons">
+        <button id="btnPrint" class="btn-modal btn-print">🖨️ 바로 인쇄</button>
+        <button id="btnDownload" class="btn-modal btn-download">💾 사진 저장</button>
+        <button id="btnClose" class="btn-modal btn-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이미지 파일 선택기 (숨김) -->
+  <input type="file" id="filePickerHeart" accept="image/*" style="display: none;">
+  <input type="file" id="filePickerAnimals" accept="image/*" style="display: none;">
+
+  <!-- 드래그앤드롭 안내 -->
+  <div id="dropOverlay" class="drop-overlay">
+    ✨ 이미지를 놓으면 배경으로 즉시 등록됩니다!
+  </div>
+
+  <!-- 인쇄 대기 팝업 -->
+  <div id="loadingModal" class="loading-modal">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <h2>🖨️ 예쁘게 인쇄하고 있어요!</h2>
+      <p>포토프린터에서 사진이 나올 때까지</p>
+      <p style="color: #0284c7; font-size: 26px;">잠시만 자리에서 기다려주세요! 💖</p>
+      <p id="printCountdown" style="font-size: 16px; color: #94a3b8; margin-top: 15px;">(약 12초 후 다음 촬영이 가능합니다)</p>
+    </div>
+  </div>
+
+  <img id="printTarget" class="print-image" />
+
+  <script>
+    const CONFIG = {
+      canvasWidth: 1200,
+      canvasHeight: 1800,
+      photoWidth: 485,
+      photoHeight: 655,
+      marginLeft: 95,
+      marginTop: 90,
+      gapX: 40,
+      gapY: 40,
+      countdownSec: 5
+    };
+
+    const APP_FONT = "'KotraHope', sans-serif";
+
+    let currentTheme = 'ribbon';
+    let brightnessMultiplier = 1.18;
+
+    // 첨부 이미지 객체 보관 (하트 & 고양이)
+    let imgHeartTexture = null;
+    let imgAnimalsTexture = null;
+
+    const video = document.getElementById('webcam');
+    const btnStart = document.getElementById('btnStart');
+    const btnPreview = document.getElementById('btnPreview');
+    const cutBadge = document.getElementById('cutBadge');
+    const countdownEl = document.getElementById('countdown');
+    const flash = document.getElementById('flash');
+    const modal = document.getElementById('resultModal');
+    const loadingModal = document.getElementById('loadingModal');
+    const canvas = document.getElementById('previewCanvas');
+    const ctx = canvas.getContext('2d');
+    const printTarget = document.getElementById('printTarget');
+    const brightnessRange = document.getElementById('brightnessRange');
+    const brightnessVal = document.getElementById('brightnessVal');
+
+    const filePickerHeart = document.getElementById('filePickerHeart');
+    const filePickerAnimals = document.getElementById('filePickerAnimals');
+    const dropOverlay = document.getElementById('dropOverlay');
+
+    let audioCtx = null;
+    let capturedFrames = [];
+    let isRunning = false;
+
+    // ==========================================
+    // 로컬스토리지에서 저장된 원본 이미지 자동 복원
+    // ==========================================
+    function loadSavedTextures() {
+      const savedHeart = localStorage.getItem('user_texture_heart');
+      if (savedHeart) {
+        imgHeartTexture = new Image();
+        imgHeartTexture.onload = () => drawPhotoStrip();
+        imgHeartTexture.src = savedHeart;
+      }
+
+      const savedAnimals = localStorage.getItem('user_texture_animals');
+      if (savedAnimals) {
+        imgAnimalsTexture = new Image();
+        imgAnimalsTexture.onload = () => drawPhotoStrip();
+        imgAnimalsTexture.src = savedAnimals;
+      }
+    }
+    loadSavedTextures();
+
+    // ==========================================
+    // 드래그 앤 드롭으로 이미지 간편 등록
+    // ==========================================
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropOverlay.style.display = 'flex';
+    });
+    window.addEventListener('dragleave', (e) => {
+      if (e.relatedTarget === null) dropOverlay.style.display = 'none';
+    });
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropOverlay.style.display = 'none';
+      const file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+
+      const choice = confirm(`가져오신 '${file.name}' 이미지를 어떤 배경으로 등록할까요?\n\n[확인] = 🐾 고양이 친구\n[취소] = 💖 몽글 하트`);
+      const targetType = choice ? 'animals' : 'heart';
+      handleFileRegister(file, targetType);
+    });
+
+    function handleFileRegister(file, type) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target.result;
+        const img = new Image();
+        img.onload = () => {
+          if (type === 'heart') {
+            imgHeartTexture = img;
+            localStorage.setItem('user_texture_heart', dataUrl);
+            currentTheme = 'heart';
+          } else {
+            imgAnimalsTexture = img;
+            localStorage.setItem('user_texture_animals', dataUrl);
+            currentTheme = 'animals';
+          }
+          syncThemeButtons();
+          drawPhotoStrip();
+          alert('성공적으로 배경 텍스처로 등록되었습니다!');
+        };
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    filePickerHeart.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFileRegister(e.target.files[0], 'heart');
+    });
+    filePickerAnimals.addEventListener('change', (e) => {
+      if (e.target.files[0]) handleFileRegister(e.target.files[0], 'animals');
+    });
+
+    // 밝기 슬라이더
+    function updateVideoFilter() {
+      video.style.filter = `brightness(${brightnessMultiplier}) contrast(1.05) saturate(1.05)`;
+    }
+    brightnessRange.addEventListener('input', (e) => {
+      const val = e.target.value;
+      brightnessMultiplier = val / 100;
+      brightnessVal.innerText = `${val}%`;
+      updateVideoFilter();
+      drawPhotoStrip();
+    });
+
+    // 테마 버튼 클릭
+    function syncThemeButtons() {
+      document.querySelectorAll('#modalThemeChips .chip-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.theme === currentTheme);
+      });
+    }
+
+    document.getElementById('modalThemeChips').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip-btn');
+      if (!btn) return;
+      const selected = btn.dataset.theme;
+
+      // 이미지가 아직 등록되지 않은 경우 즉시 파일 선택창 열기
+      if (selected === 'heart' && !imgHeartTexture) {
+        currentTheme = 'heart';
+        syncThemeButtons();
+        alert('첨부하셨던 [핑크 하트 이미지] 파일을 선택해 주세요!');
+        filePickerHeart.click();
+        return;
+      }
+      if (selected === 'animals' && !imgAnimalsTexture) {
+        currentTheme = 'animals';
+        syncThemeButtons();
+        alert('첨부하셨던 [고양이 손그림 이미지] 파일을 선택해 주세요!');
+        filePickerAnimals.click();
+        return;
+      }
+
+      currentTheme = selected;
+      syncThemeButtons();
+      drawPhotoStrip();
+    });
+
+    btnPreview.addEventListener('click', () => {
+      drawPhotoStrip();
+      modal.style.display = 'flex';
+    });
+
+    function playBeep(freq, duration) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
+          audio: false
+        });
+        video.srcObject = stream;
+        updateVideoFilter();
+      } catch (err) {
+        alert("카메라 연결 실패: " + err.message);
+      }
+    }
+
+    async function startCaptureSequence() {
+      if (isRunning) return;
+      isRunning = true;
+      btnStart.disabled = true;
+      capturedFrames = [];
+      cutBadge.style.display = 'block';
+
+      for (let cut = 1; cut <= 4; cut++) {
+        cutBadge.innerText = `CUT ${cut} / 4`;
+        
+        for (let sec = CONFIG.countdownSec; sec > 0; sec--) {
+          countdownEl.innerText = sec;
+          countdownEl.classList.add('show');
+          playBeep(sec === 1 ? 950 : 800, 0.15);
+          await wait(1000);
+          countdownEl.classList.remove('show');
+        }
+
+        playBeep(1800, 0.35);
+        triggerFlash();
+        captureCurrentFrame();
+        await wait(600);
+      }
+
+      cutBadge.style.display = 'none';
+      drawPhotoStrip();
+      modal.style.display = 'flex';
+      isRunning = false;
+      btnStart.disabled = false;
+    }
+
+    function captureCurrentFrame() {
+      const tempCanvas = document.createElement('canvas');
+      const vW = video.videoWidth || 1280;
+      const vH = video.videoHeight || 720;
+
+      const targetRatio = CONFIG.photoWidth / CONFIG.photoHeight;
+      let sW = vH * targetRatio;
+      let sH = vH;
+      let sX = (vW - sW) / 2;
+      let sY = 0;
+
+      tempCanvas.width = CONFIG.photoWidth;
+      tempCanvas.height = CONFIG.photoHeight;
+      const tCtx = tempCanvas.getContext('2d');
+
+      tCtx.translate(CONFIG.photoWidth, 0);
+      tCtx.scale(-1, 1);
+      tCtx.drawImage(video, sX, sY, sW, sH, 0, 0, CONFIG.photoWidth, CONFIG.photoHeight);
+
+      capturedFrames.push(tempCanvas);
+    }
+
+    function triggerFlash() {
+      flash.style.opacity = '0.95';
+      flash.style.transition = 'none';
+      setTimeout(() => {
+        flash.style.transition = 'opacity 0.4s ease-out';
+        flash.style.opacity = '0';
+      }, 50);
+    }
+
+    // =======================================================
+    // 이미지 비율 유지 크롭 렌더링 (Cover: 찌그러짐 없이 꽉 채우기)
+    // =======================================================
+    function drawCoverImage(ctx, img, targetW, targetH) {
+      const imgRatio = img.width / img.height;
+      const targetRatio = targetW / targetH;
+      let sW, sH, sX, sY;
+
+      if (imgRatio > targetRatio) {
+        // 이미지가 더 넓은 경우: 높이에 맞추고 좌우를 대칭으로 잘라냄
+        sH = img.height;
+        sW = img.height * targetRatio;
+        sX = (img.width - sW) / 2;
+        sY = 0;
+      } else {
+        // 이미지가 더 길쭉한 경우: 너비에 맞추고 상하를 대칭으로 잘라냄
+        sW = img.width;
+        sH = img.width / targetRatio;
+        sX = 0;
+        sY = (img.height - sH) / 2;
+      }
+      ctx.drawImage(img, sX, sY, sW, sH, 0, 0, targetW, targetH);
+    }
+
+    // 손그림 리본 & 축제 드로잉 함수
+    function drawDoodleRibbon(ctx, x, y, scale = 0.65, angle = 0, color = "#94c2ec") {
+      ctx.save();
+      ctx.translate(x, y - 5);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.scale(scale, scale);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5.0;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(-18, -30, -52, -16, -46, 8);
+      ctx.bezierCurveTo(-40, 24, -16, 13, 0, 0);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(18, -30, 52, -16, 46, 8);
+      ctx.bezierCurveTo(40, 24, 16, 13, 0, 0);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(-4, 5);
+      ctx.bezierCurveTo(-13, 23, -22, 42, -32, 58);
+      ctx.lineTo(-22, 48);
+      ctx.lineTo(-16, 59);
+      ctx.bezierCurveTo(-10, 42, -3, 23, 0, 5);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(4, 5);
+      ctx.bezierCurveTo(13, 23, 22, 42, 32, 58);
+      ctx.lineTo(22, 48);
+      ctx.lineTo(16, 59);
+      ctx.bezierCurveTo(10, 42, 3, 23, 0, 5);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(0, 1, 8, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawDoodlePartyItem(ctx, x, y, type, color, angle = 0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 4.5;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      if (type === 'hat') {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.beginPath();
+        ctx.moveTo(0, -28);
+        ctx.lineTo(-18, 18);
+        ctx.quadraticCurveTo(0, 24, 18, 18);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, -31, 5.5, 0, Math.PI*2);
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(-9, -4); ctx.lineTo(9, -1);
+        ctx.moveTo(-13, 10); ctx.lineTo(13, 12);
+        ctx.stroke();
+
+      } else if (type === 'balloon') {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+        ctx.beginPath();
+        ctx.ellipse(0, -6, 17, 22, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(-3, 16); ctx.lineTo(3, 16); ctx.lineTo(0, 19); ctx.closePath(); ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(0, 19);
+        ctx.bezierCurveTo(-7, 27, 7, 35, -2, 43);
+        ctx.stroke();
+
+      } else if (type === 'star') {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, -20);
+        ctx.quadraticCurveTo(0, 0, 20, 0);
+        ctx.quadraticCurveTo(0, 0, 0, 20);
+        ctx.quadraticCurveTo(0, 0, -20, 0);
+        ctx.quadraticCurveTo(0, 0, 0, -20);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // ==========================================
+    // 캔버스 렌더링 (배경 -> 사진 -> 문구)
+    // ==========================================
+    function drawPhotoStrip() {
+      ctx.filter = "none";
+
+      const symRowA = [85, 340, 600, 860, 1115];
+      const symRowB = [210, 470, 730, 990];
+      const yPositions = [80, 240, 390, 540, 690, 840, 960, 1110, 1260, 1410, 1560, 1720];
+
+      // 1. 배경 프레임 렌더링
+      if (currentTheme === 'ribbon') {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+
+        yPositions.forEach((y, rowIdx) => {
+          const cols = (rowIdx % 2 === 0) ? symRowA : symRowB;
+          cols.forEach((x, cIdx) => {
+            const rot = ((x * 3 + y * 7) % 32) - 16;
+            const scale = 0.62 + ((cIdx + rowIdx) % 3) * 0.03;
+            drawDoodleRibbon(ctx, x, y, scale, rot, "#95c2eb");
+          });
+        });
+
+      } else if (currentTheme === 'festival') {
+        ctx.fillStyle = "#fffef7";
+        ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+
+        const items = ['hat', 'balloon', 'star'];
+        const colors = ['#ff7675', '#fdcb6e', '#74b9ff', '#55efc4', '#a29bfe'];
+        let idx = 0;
+
+        yPositions.forEach((y, rowIdx) => {
+          const cols = (rowIdx % 2 === 0) ? symRowA : symRowB;
+          cols.forEach((x) => {
+            const item = items[idx % items.length];
+            const col = colors[idx % colors.length];
+            const rot = ((x * 4 + y * 6) % 30) - 15;
+            drawDoodlePartyItem(ctx, x, y, item, col, rot);
+            idx++;
+          });
+        });
+
+      } else if (currentTheme === 'heart') {
+        // ★ 첨부해주신 색연필 하트 이미지 원본 그대로 배경 텍스처 적용
+        if (imgHeartTexture) {
+          drawCoverImage(ctx, imgHeartTexture, CONFIG.canvasWidth, CONFIG.canvasHeight);
+        } else {
+          ctx.fillStyle = "#fff5f7";
+          ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+          ctx.fillStyle = "#ff6b8b";
+          ctx.font = "34px 'KotraHope'";
+          ctx.textAlign = "center";
+          ctx.fillText("💖 여기에 핑크 하트 이미지를 드래그해 놓아주세요!", CONFIG.canvasWidth / 2, CONFIG.canvasHeight / 2);
+        }
+
+      } else if (currentTheme === 'animals') {
+        // ★ 첨부해주신 고양이 볼펜 손그림 이미지 원본 그대로 배경 텍스처 적용
+        if (imgAnimalsTexture) {
+          drawCoverImage(ctx, imgAnimalsTexture, CONFIG.canvasWidth, CONFIG.canvasHeight);
+        } else {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+          ctx.fillStyle = "#333333";
+          ctx.font = "34px 'KotraHope'";
+          ctx.textAlign = "center";
+          ctx.fillText("🐾 여기에 고양이 손그림 이미지를 드래그해 놓아주세요!", CONFIG.canvasWidth / 2, CONFIG.canvasHeight / 2);
+        }
+      }
+
+      // 2. 사각형 4컷 사진 렌더링
+      const col2X = CONFIG.marginLeft + CONFIG.photoWidth + CONFIG.gapX;
+      const row2Y = CONFIG.marginTop + CONFIG.photoHeight + CONFIG.gapY;
+      const positions = [
+        { x: CONFIG.marginLeft, y: CONFIG.marginTop },
+        { x: col2X,             y: CONFIG.marginTop },
+        { x: CONFIG.marginLeft, y: row2Y },
+        { x: col2X,             y: row2Y }
+      ];
+
+      const hasRealPhotos = capturedFrames.length === 4;
+
+      positions.forEach((pos, index) => {
+        ctx.save();
+        ctx.shadowColor = "rgba(0, 0, 0, 0.12)";
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 4;
+
+        // 사각형 사진 흰색 판
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(pos.x, pos.y, CONFIG.photoWidth, CONFIG.photoHeight);
+        ctx.restore();
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(pos.x, pos.y, CONFIG.photoWidth, CONFIG.photoHeight);
+        ctx.clip();
+
+        if (hasRealPhotos) {
+          ctx.filter = `brightness(${brightnessMultiplier}) contrast(1.06) saturate(1.05)`;
+          ctx.drawImage(capturedFrames[index], pos.x, pos.y, CONFIG.photoWidth, CONFIG.photoHeight);
+        } else {
+          ctx.fillStyle = "#f8f9fa";
+          ctx.fillRect(pos.x, pos.y, CONFIG.photoWidth, CONFIG.photoHeight);
+          ctx.fillStyle = "#adb5bd";
+          ctx.font = `34px ${APP_FONT}`;
+          ctx.textAlign = "center";
+          ctx.fillText(`사진 ${index + 1} 들어가는 곳`, pos.x + CONFIG.photoWidth / 2, pos.y + CONFIG.photoHeight / 2);
+        }
+        ctx.restore();
+
+        // 사각형 화이트 테두리 선
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 8;
+        ctx.strokeRect(pos.x, pos.y, CONFIG.photoWidth, CONFIG.photoHeight);
+      });
+
+      // 3. 하단 문구 렌더링
+      const bannerTop = row2Y + CONFIG.photoHeight + 35;
+      const bannerCenterY = bannerTop + ((CONFIG.canvasHeight - bannerTop) / 2) - 8;
+
+      ctx.textAlign = "center";
+
+      // 테마별 최적 텍스트 색상
+      let mainTextColor = "#0284c7";
+      let subTextColor  = "#38bdf8";
+
+      if (currentTheme === 'festival') {
+        mainTextColor = "#d9480f";
+        subTextColor  = "#f76707";
+      } else if (currentTheme === 'heart') {
+        mainTextColor = "#d6336c";
+        subTextColor  = "#f783ac";
+      } else if (currentTheme === 'animals') {
+        // 고양이 드로잉과 찰떡인 깔끔한 딥 블랙 + 레드 포인트
+        mainTextColor = "#1a1a1a";
+        subTextColor  = "#e03131";
+      }
+
+      // 윗줄: 74px 대형
+      ctx.font = `bold 74px ${APP_FONT}`;
+      ctx.fillStyle = mainTextColor;
+      ctx.fillText("♥2026 고척초등학교 기버데이♥", CONFIG.canvasWidth / 2, bannerCenterY - 26);
+
+      // 아랫줄: 54px 대형
+      ctx.font = `bold 54px ${APP_FONT}`;
+      ctx.fillStyle = subTextColor;
+      ctx.fillText("2026.11.19", CONFIG.canvasWidth / 2, bannerCenterY + 54);
+    }
+
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    btnStart.addEventListener('click', startCaptureSequence);
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !isRunning && modal.style.display !== 'flex' && loadingModal.style.display !== 'flex') {
+        e.preventDefault();
+        startCaptureSequence();
+      }
+    });
+
+    document.getElementById('btnPrint').addEventListener('click', () => {
+      printTarget.src = canvas.toDataURL('image/png');
+      modal.style.display = 'none';
+      loadingModal.style.display = 'flex';
+
+      setTimeout(() => {
+        window.print();
+      }, 300);
+
+      let remain = 12;
+      const countLabel = document.getElementById('printCountdown');
+      const timer = setInterval(() => {
+        remain--;
+        countLabel.innerText = `(약 ${remain}초 후 다음 촬영이 가능합니다)`;
+        if (remain <= 0) {
+          clearInterval(timer);
+          loadingModal.style.display = 'none';
+        }
+      }, 1000);
+    });
+
+    document.getElementById('btnDownload').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = `고척초_기버데이_${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    document.getElementById('btnClose').addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    document.fonts.ready.then(() => {
+      drawPhotoStrip();
+    });
+
+    initCamera();
+  </script>
+</body>
+</html>
